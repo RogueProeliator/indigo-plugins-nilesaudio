@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<Actions>
+	<!-- Actions which are taken against the main receiver and affect all zones -->
+	<Action id="allZonesOff" deviceFilter="self.nilesAudioReceiver">
+		<Name>Party Zones - All Off</Name>
+		<CallbackMethod>executeAction</CallbackMethod>
+	</Action>
+	<Action id="muteAllZones" deviceFilter="self.nilesAudioReceiver">
+		<Name>Party Zones - Mute All</Name>
+		<CallbackMethod>executeAction</CallbackMethod>
+	</Action>
+	<Action id="sep01" />
+	
+	<Action id="tuneToStation" deviceFilter="self.nilesAudioReceiver">
+		<Name>Tune to Radio Station</Name>
+		<ConfigUI>
+			<Field id="instructions" type="label" fontSize="small">
+				<Label>Use ###.# format for FM stations and #### for AM; preceeding zeroes will be automatically added if necessary to conform to the requested format.</Label>
+			</Field>
+			<Field id="stationNumber" type="textfield">
+				<Label>Station:</Label>
+			</Field>
+		</ConfigUI>
+		<CallbackMethod>executeAction</CallbackMethod>
+	</Action>
+	<Action id="sep02" />
+	
+	<!-- Actions which are generated into zone-specific commands -->
+	<Action id="changeZonePower" deviceFilter="self.nilesAudioZone">
+		<Name>Zone Power - Set Value</Name>
+		<ConfigUI>
+			<Field type="menu" id="powerState">
+				<Label>Turn Zone Power:</Label>
+				<List>
+					<Option value="0">Off</Option>
+					<Option value="1">On</Option>
+				</List>
+			</Field>
+		</ConfigUI>
+		<CallbackMethod>executeAction</CallbackMethod>
+	</Action>
+	<Action id="toggleZonePower" deviceFilter="self.nilesAudioZone">
+		<Name>Zone Power - Toggle</Name>
+		<CallbackMethod>executeAction</CallbackMethod>
+	</Action>
+	<Action id="sep03" />
+	
+	<Action id="changeZoneSource" deviceFilter="self.nilesAudioZone">
+		<Name>Set Zone Source</Name>
+		<ConfigUI>
+			<Field type="menu" id="zoneSource">
+				<Label>Set Source:</Label>
+				<List class="self" filter="" method="getConfigDialogMenu" />
+			</Field>
+		</ConfigUI>
+		<CallbackMethod>executeAction</CallbackMethod>
+	</Action>
+	<Action id="sep04" />
+	
+	<Action id="setZoneVolume" deviceFilter="self.nilesAudioZone">
+		<Name>Zone Volume - Set Value</Name>
+		<ConfigUI>
+			<Field id="instructions" type="label" fontSize="small">
+				<Label>This action relies on the current state of the device in Indigo; if you are using non-Indigo controls such as wall pads, please be sure polling for status is setup in the device configuration dialog.</Label>
+			</Field>
+			<Field id="volumeTarget" type="textfield">
+				<Label>Set To (0-100):</Label>
+			</Field>
+		</ConfigUI>
+		<CallbackMethod>executeAction</CallbackMethod>
+	</Action>
+	<Action id="adjustZoneVolume" deviceFilter="self.nilesAudioZone">
+		<Name>Zone Volume - Adjust Up/Down</Name>
+		<ConfigUI>
+			<Field id="instructions" type="label" fontSize="small">
+				<Label>This action relies on the current state of the device in Indigo; if you are using non-Indigo controls such as wall pads, please be sure polling for status is setup in the device configuration dialog.</Label>
+			</Field>
+			<Field id="volumeAdjustment" type="textfield">
+				<Label>Adjust By (negative allowed):</Label>
+			</Field>
+		</ConfigUI>
+		<CallbackMethod>executeAction</CallbackMethod>
+	</Action>
+	<Action id="setZoneMute" deviceFilter="self.nilesAudioZone">
+		<Name>Zone Mute - Set Value</Name>
+		<ConfigUI>
+			<Field id="instructions" type="label" fontSize="small">
+				<Label>This action relies on the current state of the device in Indigo; if you are using non-Indigo controls such as wall pads, please be sure polling for status is setup in the device configuration dialog.</Label>
+			</Field>
+			<Field type="menu" id="muteState">
+				<Label>Turn Zone Mute:</Label>
+				<List>
+					<Option value="0">Un-muted</Option>
+					<Option value="1">Muted</Option>
+				</List>
+			</Field>
+		</ConfigUI>
+		<CallbackMethod>executeAction</CallbackMethod>
+	</Action>
+	<Action id="toggleZoneMuteStatus" deviceFilter="self.nilesAudioZone">
+		<Name>Zone Mute - Toggle</Name>
+		<CallbackMethod>executeAction</CallbackMethod>
+	</Action>
+</Actions>

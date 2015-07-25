@@ -1,0 +1,244 @@
+<RPFrameworkConfig>
+	<pluginConfig>
+		<guiConfiguration>
+			<pluginUpdateURL><![CDATA[http://forums.indigodomo.com/viewtopic.php?f=62&t=11197]]></pluginUpdateURL>
+		</guiConfiguration>
+		<deviceMapping>
+			<device indigoId="nilesAudioReceiver" className="NilesAudioReceiverDevice" />
+			<device indigoId="nilesAudioZone" className="NilesAudioZone" />
+		</deviceMapping>
+		<devices>
+			<device indigoId="nilesAudioReceiver">
+				<params>
+					<param indigoId="serialPort" paramType="ParamTypeString" isRequired="True">
+						<invalidValueMessage><![CDATA[Please select the serial port to which the receiver is attached]]></invalidValueMessage>
+					</param>
+					<param indigoId="zonePollInterval" paramType="ParamTypeInteger" isRequired="True">
+						<invalidValueMessage><![CDATA[Please enter the seconds (0-10000) between poll intervals]]></invalidValueMessage>
+						<minValue>0</minValue>
+						<maxValue>10000</maxValue>
+					</param>
+				</params>
+				<guiConfiguration>
+					<deviceAddressFormat><![CDATA[%ap:serialPort%]]></deviceAddressFormat>
+					<telnetConnectionDeviceStateName>connectionState</telnetConnectionDeviceStateName>
+					<telnetConnectionDeviceStateBoolean>isConnected</telnetConnectionDeviceStateBoolean>
+					<updateStatusPollerIntervalProperty>zonePollInterval</updateStatusPollerIntervalProperty>
+					<updateStatusPollerActionId>updateDeviceStatesFromReceiver</updateStatusPollerActionId>
+					<serialPortName><![CDATA[%dp:serialPort%]]></serialPortName>
+					<serialPortBaud>38400</serialPortBaud>
+					<serialPortParity>PARITY_NONE</serialPortParity>
+					<serialPortByteSize>EIGHTBITS</serialPortByteSize>
+					<serialPortStopBits>STOPBITS_ONE</serialPortStopBits>
+					<telnetDeviceReadTimeout>1.0</telnetDeviceReadTimeout>
+					<telnetDeviceWriteTimeout>1.0</telnetDeviceWriteTimeout>
+					<deviceIsChildDevice>False</deviceIsChildDevice>
+					<childDeviceDictionaryKeyFormat><![CDATA[%dp:zoneNumber%]]></childDeviceDictionaryKeyFormat>
+				</guiConfiguration>
+				<deviceResponses>
+					<response id="zoneStatusResponse" respondToActionId="">
+						<criteriaFormatString><![CDATA[%cp:response%]]></criteriaFormatString>
+						<matchExpression><![CDATA[^usc,2,(?P<zone>\d+),(?P<source>\d+),(?P<onOff>0|1),(?P<volume>\d+),(?P<mute>0|1),(?P<base>\d+),(?P<treble>\d+)\s*$]]></matchExpression>
+						<effects>
+							<effect effectType="RESPONSE_EFFECT_CALLBACK" evalResult="false">
+								<updateParam>zoneStatusResponseReceived</updateParam>
+								<updateValueFormat></updateValueFormat>
+							</effect>
+						</effects>
+					</response>
+					<response id="activateZoneResponse" respondToActionId="">
+						<criteriaFormatString><![CDATA[%cp:response%]]></criteriaFormatString>
+						<matchExpression><![CDATA[^rznc,4,(\d+)\s*$]]></matchExpression>
+						<effects>
+							<effect effectType="RESPONSE_EFFECT_CALLBACK" evalResult="false">
+								<updateParam>activeControlZoneUpdated</updateParam>
+								<updateValueFormat></updateValueFormat>
+							</effect>
+						</effects>
+					</response>
+				</deviceResponses>
+			</device>
+			<device indigoId="nilesAudioZone">
+				<params>
+					<param indigoId="sourceReceiver" paramType="ParamTypeString" isRequired="True">
+						<invalidValueMessage><![CDATA[Please select the receiver to which this zone should be associated]]></invalidValueMessage>
+					</param>
+					<param indigoId="zoneNumber" paramType="ParamTypeInteger" isRequired="True">
+						<invalidValueMessage><![CDATA[Please select the zone number on the Niles Audio Receiver for this device]]></invalidValueMessage>
+						<minValue>1</minValue>
+						<maxValue>18</maxValue>
+					</param>
+				</params>
+				<guiConfiguration>
+					<deviceAddressFormat><![CDATA[Zone %ap:zoneNumber%]]></deviceAddressFormat>
+					<deviceIsChildDevice>True</deviceIsChildDevice>
+					<deviceParentIdProperty>sourceReceiver</deviceParentIdProperty>
+				</guiConfiguration>
+			</device>
+		</devices>
+		<actions>
+			<action indigoId="updateDeviceStatesFromReceiver">
+				<commands>
+					<command>
+						<commandName>createAllZonesStatusRequestCommands</commandName>
+						<commandFormat></commandFormat>
+					</command>
+				</commands>
+			</action>
+			
+			<action indigoId="allZonesOff">
+				<commands>
+					<command>
+						<commandName>writeToTelnetConn</commandName>
+						<commandFormat>znt,10,h</commandFormat>
+					</command>
+					<command>
+						<commandName>createAllZonesStatusRequestCommands</commandName>
+						<commandFormat></commandFormat>
+					</command>
+				</commands>
+			</action>
+			<action indigoId="muteAllZones">
+				<commands>
+					<command>
+						<commandName>createAllZonesMuteCommands</commandName>
+						<commandFormat></commandFormat>
+					</command>
+				</commands>
+			</action>
+			<action indigoId="tuneToStation">
+				<params>
+					<param indigoId="stationNumber" paramType="ParamTypeString" isRequired="True">
+						<validationExpression><![CDATA[^(\d{3,4})|(\d{2,3}\.\d)$]]></validationExpression>
+						<invalidValueMessage><![CDATA[Please enter the radio station in FM (XXX.YY) or AM (XXXX) format]]></invalidValueMessage>
+					</param>
+				</params>
+				<commands>
+					<command>
+						<commandName>writeToTelnetConn</commandName>
+						<commandFormat>src,11,%ap:stationNumber%</commandFormat>
+					</command>
+				</commands>
+			</action>
+			
+			<action indigoId="changeZonePower">
+				<params>
+					<param indigoId="powerState" paramType="ParamTypeString" isRequired="True">
+						<invalidValueMessage><![CDATA[Please select the new power state for the zone]]></invalidValueMessage>
+					</param>
+				</params>
+				<commands>
+					<command>
+						<commandName>writeToTelnetConn</commandName>
+						<commandFormat>eval:"zsc,%dp:zoneNumber%,10" if %ds:isPoweredOn% else "zsc,%dp:zoneNumber%,%ds:source%"</commandFormat>
+					</command>
+				</commands>
+			</action>
+			<action indigoId="toggleZonePower">
+				<commands>
+					<command>
+						<commandName>writeToTelnetConn</commandName>
+						<commandFormat>eval:"zsc,%dp:zoneNumber%," + ("10" if %ds:isPoweredOn% else "%ds:source%")</commandFormat>
+					</command>
+					<command>
+						<commandName>createZoneStatusUpdateCommands</commandName>
+						<commandFormat>%dp:zoneNumber%</commandFormat>
+					</command>
+				</commands>
+			</action>
+			
+			<action indigoId="changeZoneSource">
+				<params>
+					<param indigoId="zoneSource" paramType="ParamTypeString" isRequired="True">
+						<invalidValueMessage><![CDATA[Please select the new source for the zone]]></invalidValueMessage>
+					</param>
+				</params>
+				<commands>
+					<command>
+						<commandName>writeToTelnetConn</commandName>
+						<commandFormat>zsc,%dp:zoneNumber%,%ap:zoneSource%</commandFormat>
+					</command>
+					<command>
+						<commandName>createZoneStatusUpdateCommands</commandName>
+						<commandFormat>%dp:zoneNumber%</commandFormat>
+					</command>
+				</commands>
+			</action>
+			
+			<action indigoId="adjustZoneVolume">
+				<params>
+					<param indigoId="volumeAdjustment" paramType="ParamTypeInteger" isRequired="True">
+						<minValue>-100</minValue>
+						<maxValue>100</maxValue>
+						<invalidValueMessage><![CDATA[Please enter the amount by which the volume should be adjusted]]></invalidValueMessage>
+					</param>
+				</params>
+				<commands>
+					<command>
+						<commandName>writeToTelnetConn</commandName>
+						<commandFormat><![CDATA[eval:"zsc,%dp:zoneNumber%," + ("12" if int("%ap:volumeAdjustment%")>0 else "13")]]></commandFormat>
+						<commandRepeatCount><![CDATA[eval:str(math.fabs(%ap:volumeAdjustment%))]]></commandRepeatCount>
+						<commandRepeatDelay>0.1</commandRepeatDelay>
+					</command>
+					<command>
+						<commandName>createZoneStatusUpdateCommands</commandName>
+						<commandFormat>%dp:zoneNumber%</commandFormat>
+					</command>
+				</commands>
+			</action>
+			<action indigoId="setZoneVolume">
+				<params>
+					<param indigoId="volumeTarget" paramType="ParamTypeInteger" isRequired="True">
+						<minValue>0</minValue>
+						<maxValue>100</maxValue>
+						<invalidValueMessage><![CDATA[Please enter the new volume (0-100)]]></invalidValueMessage>
+					</param>
+				</params>
+				<commands>
+					<command>
+						<commandName>writeToTelnetConn</commandName>
+						<commandFormat><![CDATA[eval:"zsc,%dp:zoneNumber%," + ("12" if int("%ap:volumeTarget%")>int("%ds:volume%") else "13")]]></commandFormat>
+						<commandRepeatCount><![CDATA[eval:str(math.fabs(%ap:volumeTarget% - %ds:volume%))]]></commandRepeatCount>
+						<commandRepeatDelay>0.1</commandRepeatDelay>
+					</command>
+					<command>
+						<commandName>createZoneStatusUpdateCommands</commandName>
+						<commandFormat>%dp:zoneNumber%</commandFormat>
+					</command>
+				</commands>
+			</action>
+			<action indigoId="setZoneMute">
+				<params>
+					<param indigoId="muteState" paramType="ParamTypeInteger" isRequired="True">
+						<minValue>0</minValue>
+						<maxValue>1</maxValue>
+						<invalidValueMessage><![CDATA[Please select a new mute status]]></invalidValueMessage>
+					</param>
+				</params>
+				<commands>
+					<command>
+						<commandName>writeToTelnetConn</commandName>
+						<commandFormat><![CDATA[zsc,%dp:zoneNumber%,11]]></commandFormat>
+						<commandExecCondition><![CDATA[(%ds:isMuted% == True and %ap:muteState% == 0) or (%ds:isMuted% == False and %ap:muteState% == 1)]]></commandExecCondition>
+					</command>
+					<command>
+						<commandName>createZoneStatusUpdateCommands</commandName>
+						<commandFormat>%dp:zoneNumber%</commandFormat>
+					</command>
+				</commands>
+			</action>
+			<action indigoId="toggleZoneMuteStatus">
+				<commands>
+					<command>
+						<commandName>writeToTelnetConn</commandName>
+						<commandFormat><![CDATA[zsc,%dp:zoneNumber%,11]]></commandFormat>
+					</command>
+					<command>
+						<commandName>createZoneStatusUpdateCommands</commandName>
+						<commandFormat><![CDATA[%dp:zoneNumber%]]></commandFormat>
+					</command>
+				</commands>
+			</action>
+		</actions>
+	</pluginConfig>
+</RPFrameworkConfig>
