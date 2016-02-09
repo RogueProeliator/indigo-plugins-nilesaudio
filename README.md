@@ -10,15 +10,16 @@ The latest released version of the plugin is available for download [here](http:
 
 ###Configuring the Plugin
 Upon first installation you will be asked to configure the plugin; please see the instructions on the configuration screen for more information. Most users will be fine with the defaults unless an email is desired when a new version is released.
-![](<Resources/Doc-Images/PluginConfigurationScreen.png>)
+![](<Documentation and Information/Doc-Images/PluginConfig.png>)
 
 #Plugin Devices
 ###Receiver Devices
 You will need to create a new Niles Audio Receiver device in Indigo for each **MASTER** receiver; note that all control of slaves devices goes through the master, so only one receiver should be created in Indigo. In the Device Settings you will need to set a couple of options such as selecting the serial port and, optionally, adding source information / labels:
-![](<Resources/Doc-Images/EditDeviceSettings.png>)
+![](<Documentation and Information/Doc-Images/ReceiverDeviceConfig.png>)
 
 ###Audio Zones
 After the receiver has been created, you must create an Indigo device for each zone attached to the receiver (or its slave receivers). In the Device Settings you will need to set a couple of options including selecting the receiver to which this zone is attached and the number of the zone (on the receiver). Note that slave receivers continue the numbering scheme from the master, so for ZR-6 receivers the master's zones are numbered 1 to 6, the first slave 7 to 12 and the second slave 13 to 18:
+![](<Documentation and Information/Doc-Images/ZoneDeviceConfig.png>)
 
 #Available Actions
 ###Party Zones - All Off / Mute All
