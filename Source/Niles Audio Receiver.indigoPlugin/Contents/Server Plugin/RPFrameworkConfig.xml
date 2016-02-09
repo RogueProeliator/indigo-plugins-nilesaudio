@@ -30,7 +30,7 @@
 					<serialPortParity>PARITY_NONE</serialPortParity>
 					<serialPortByteSize>EIGHTBITS</serialPortByteSize>
 					<serialPortStopBits>STOPBITS_ONE</serialPortStopBits>
-					<telnetDeviceReadTimeout>1.0</telnetDeviceReadTimeout>
+					<telnetDeviceReadTimeout>0.5</telnetDeviceReadTimeout>
 					<telnetDeviceWriteTimeout>1.0</telnetDeviceWriteTimeout>
 					<deviceIsChildDevice>False</deviceIsChildDevice>
 					<childDeviceDictionaryKeyFormat><![CDATA[%dp:zoneNumber%]]></childDeviceDictionaryKeyFormat>
@@ -238,6 +238,21 @@
 						<commandFormat><![CDATA[%dp:zoneNumber%]]></commandFormat>
 					</command>
 				</commands>
+			</action>
+			
+			<!-- ARBITRARY COMMAND PROCESSING -->
+			<action indigoId="SendArbitraryCommand">
+				<commands>
+					<command>
+						<commandName>writeToTelnetConn</commandName>
+						<commandFormat>%ap:commandCode%</commandFormat>
+					</command>
+				</commands>
+				<params>
+					<param indigoId="commandCode" paramType="ParamTypeString" isRequired="True">
+						<invalidValueMessage><![CDATA[Please enter a command to send]]></invalidValueMessage>
+					</param>
+				</params>
 			</action>
 		</actions>
 	</pluginConfig>

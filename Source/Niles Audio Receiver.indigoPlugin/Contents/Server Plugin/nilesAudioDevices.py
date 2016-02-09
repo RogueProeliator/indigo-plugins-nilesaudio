@@ -65,7 +65,7 @@ class NilesAudioReceiverDevice(RPFramework.RPFrameworkTelnetDevice.RPFrameworkTe
 			updateCommandList.append(self.createZoneStatusRequestCommand(rpCommand.commandPayload))
 			self.queueDeviceCommands(updateCommandList)
 		
-		elif rpCommand.commandName == "createAllZonesStatusRequestCommands":
+		elif rpCommand.commandName == u'createAllZonesStatusRequestCommands':
 			# create a set of commands to update the status of all zones defined by the
 			# plugin (as child devices)
 			updateCommandList = []
@@ -80,22 +80,22 @@ class NilesAudioReceiverDevice(RPFramework.RPFrameworkTelnetDevice.RPFrameworkTe
 			# this command will immediately activate the requested zone (per the payload)
 			# for control if it is not already active
 			if self.activeControlZone != int(rpCommand.commandPayload):
-				self.hostPlugin.logDebugMessage("Writing activate zone request for zone " + rpCommand.commandPayload, RPFramework.RPFrameworkPlugin.DEBUGLEVEL_HIGH)
+				self.hostPlugin.logDebugMessage(u'Writing activate zone request for zone ' + RPFramework.RPFrameworkUtils.to_unicode(rpCommand.commandPayload), RPFramework.RPFrameworkPlugin.DEBUGLEVEL_HIGH)
 				writeCommand = "znc,4," + rpCommand.commandPayload + "\r"
 				ipConnection.write(writeCommand.encode("ascii"))
 			else:
-				self.hostPlugin.logDebugMessage("Zone " + rpCommand.commandPayload + " already active, ignoring activate zone command for efficiency", RPFramework.RPFrameworkPlugin.DEBUGLEVEL_HIGH)
+				self.hostPlugin.logDebugMessage(u'Zone ' + RPFramework.RPFrameworkUtils.to_unicode(rpCommand.commandPayload) + u' already active, ignoring activate zone command for efficiency', RPFramework.RPFrameworkPlugin.DEBUGLEVEL_HIGH)
 				
 			# ensure that the delay is in place...
 			if rpCommand.postCommandPause == 0.0:
 				rpCommand.postCommandPause = 0.1
 				
-		elif rpCommand.commandName == "createAllZonesMuteCommands":
+		elif rpCommand.commandName == u'createAllZonesMuteCommands':
 			# this command will be fired whenever the plugin needs to create the commands that will mute
 			# all zones (must be done individually)
 			muteCommandList = []
 			for zoneNumber in self.childDevices:
-				if self.childDevices[zoneNumber].indigoDevice.states["isPoweredOn"] == True and self.childDevices[zoneNumber].indigoDevice.states["isMuted"] == False:
+				if self.childDevices[zoneNumber].indigoDevice.states[u'isPoweredOn'] == True and self.childDevices[zoneNumber].indigoDevice.states[u'isMuted'] == False:
 					self.hostPlugin.logDebugMessage("Mute All: muting zone " + str(zoneNumber), RPFramework.RPFrameworkPlugin.DEBUGLEVEL_HIGH)
 					muteCommandList.append(RPFramework.RPFrameworkCommand.RPFrameworkCommand(RPFramework.RPFrameworkTelnetDevice.CMD_WRITE_TO_DEVICE, commandPayload="zsc," + zoneNumber + ",11", postCommandPause=0.1))
 					muteCommandList.append(RPFramework.RPFrameworkCommand.RPFrameworkCommand(CMD_CREATEZONESTATUSUPDATECOMMAND, commandPayload=str(zoneNumber), postCommandPause=0.1))
@@ -132,53 +132,53 @@ class NilesAudioReceiverDevice(RPFramework.RPFrameworkTelnetDevice.RPFrameworkTe
 		
 		# device status updates are expensive, so only do the update on statuses that are
 		# different than current
-		self.hostPlugin.logDebugMessage("Received status update for Zone " + statusInfo["zone"] + ": " + responseObj, RPFramework.RPFrameworkPlugin.DEBUGLEVEL_MED)
+		self.hostPlugin.logDebugMessage(u'Received status update for Zone ' + RPFramework.RPFrameworkUtils.to_unicode(statusInfo["zone"]) + u': ' + RPFramework.RPFrameworkUtils.to_unicode(responseObj), RPFramework.RPFrameworkPlugin.DEBUGLEVEL_MED)
 		zoneDevice = self.childDevices[statusInfo["zone"]]
 
 		# get the on/off status as this will determine what info we update; do not update it now
 		# since our uiValue may change depending upon other conditions
-		statusIsPoweredOn = statusInfo["onOff"] == "1"
+		statusIsPoweredOn = statusInfo[u'onOff'] == u'1'
 		forceUIValueUpdate = False
-		onOffUIValue = ""
+		onOffUIValue = u''
 
 		# we may only update the remainder of the states if the zone is powered on... otherwise
 		# the information is not reliable
 		if statusIsPoweredOn == True:
-			if zoneDevice.indigoDevice.states.get("source", "") != statusInfo["source"]:
-				uiSourceValue = self.indigoDevice.pluginProps.get("source" + statusInfo["source"] + "Label", "")
+			if zoneDevice.indigoDevice.states.get(u'source', u'') != statusInfo[u'source']:
+				uiSourceValue = self.indigoDevice.pluginProps.get(u'source' + statusInfo[u'source'] + u'Label', u'')
 				if uiSourceValue == "":
 					uiSourceValue = statusInfo["source"]
-				zoneDevice.indigoDevice.updateStateOnServer(key="source", value=int(statusInfo["source"]), uiValue=uiSourceValue)
+				zoneDevice.indigoDevice.updateStateOnServer(key=u'source', value=int(statusInfo[u'source']), uiValue=uiSourceValue)
 		
-			statusVolume = int(statusInfo["volume"])
-			if int(zoneDevice.indigoDevice.states.get("volume", "0")) != statusVolume:
+			statusVolume = int(statusInfo[u'volume'])
+			if int(zoneDevice.indigoDevice.states.get(u'volume', u'0')) != statusVolume:
 				forceUIValueUpdate = True
-				zoneDevice.indigoDevice.updateStateOnServer(key="volume", value=statusVolume)
+				zoneDevice.indigoDevice.updateStateOnServer(key=u'volume', value=statusVolume)
 			
-			if zoneDevice.indigoDevice.states.get("isMuted", False) != (statusInfo["mute"] == "1"):
+			if zoneDevice.indigoDevice.states.get(u'isMuted', False) != (statusInfo[u'mute'] == u'1'):
 				forceUIValueUpdate = True
-				zoneDevice.indigoDevice.updateStateOnServer(key="isMuted", value=(statusInfo["mute"] == "1"))
+				zoneDevice.indigoDevice.updateStateOnServer(key=u'isMuted', value=(statusInfo[u'mute'] == u'1'))
 			
-			statusBaseLevel = int(statusInfo["base"])
-			if int(zoneDevice.indigoDevice.states.get("baseLevel", "0")) != statusBaseLevel:
+			statusBaseLevel = int(statusInfo[u'base'])
+			if int(zoneDevice.indigoDevice.states.get(u'baseLevel', u'0')) != statusBaseLevel:
 				zoneDevice.indigoDevice.updateStateOnServer(key="baseLevel", value=statusBaseLevel)
 			
-			statusTrebleLevel = int(statusInfo["treble"])
-			if int(zoneDevice.indigoDevice.states.get("trebleLevel", "0")) != statusTrebleLevel:
-				zoneDevice.indigoDevice.updateStateOnServer(key="trebleLevel", value=statusTrebleLevel)
+			statusTrebleLevel = int(statusInfo[u'treble'])
+			if int(zoneDevice.indigoDevice.states.get(u'trebleLevel', u'0')) != statusTrebleLevel:
+				zoneDevice.indigoDevice.updateStateOnServer(key=u'trebleLevel', value=statusTrebleLevel)
 				
 			# determine the on/off display text
-			if statusInfo["mute"] == "1" or statusVolume == 0:
-				onOffUIValue = "muted"
+			if statusInfo[u'mute'] == u'1' or statusVolume == 0:
+				onOffUIValue = u'muted'
 			else:
 				onOffUIValue = str(statusVolume)
 		else:
-			onOffUIValue = "off"
-			self.hostPlugin.logDebugMessage("Skipping status update for zone that is off", RPFramework.RPFrameworkPlugin.DEBUGLEVEL_MED)
+			onOffUIValue = u'off'
+			self.hostPlugin.logDebugMessage(u'Skipping status update for zone that is off', RPFramework.RPFrameworkPlugin.DEBUGLEVEL_MED)
 			
 		# finally update the on/off state...
-		if zoneDevice.indigoDevice.states.get("isPoweredOn", False) != statusIsPoweredOn or forceUIValueUpdate == True:
-			zoneDevice.indigoDevice.updateStateOnServer(key="isPoweredOn", value=statusIsPoweredOn, uiValue=onOffUIValue)
+		if zoneDevice.indigoDevice.states.get(u'isPoweredOn', False) != statusIsPoweredOn or forceUIValueUpdate == True:
+			zoneDevice.indigoDevice.updateStateOnServer(key=u'isPoweredOn', value=statusIsPoweredOn, uiValue=onOffUIValue)
 			
 	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	# This callback is made whenever the plugin has received the response to a request
@@ -189,7 +189,7 @@ class NilesAudioReceiverDevice(RPFramework.RPFrameworkTelnetDevice.RPFrameworkTe
 		responseParser = re.compile(r'^rznc,4,(\d+)\s*$', re.I)
 		matchObj = responseParser.match(responseObj)
 		self.activeControlZone = int(matchObj.group(1))
-		self.hostPlugin.logDebugMessage("Updated active control zone to " + matchObj.group(1), RPFramework.RPFrameworkPlugin.DEBUGLEVEL_HIGH)
+		self.hostPlugin.logDebugMessage(u'Updated active control zone to ' + RPFramework.RPFrameworkUtils.to_unicode(matchObj.group(1)), RPFramework.RPFrameworkPlugin.DEBUGLEVEL_HIGH)
 				
 		
 #/////////////////////////////////////////////////////////////////////////////////////////
@@ -227,9 +227,9 @@ class NilesAudioZone(RPFramework.RPFrameworkNonCommChildDevice.RPFrameworkNonCom
 		
 		sourceOptions = []
 		for x in range(1,7):
-			sourcePropName = "source" + str(x) + "Label"
+			sourcePropName = u'source' + RPFramework.RPFrameworkUtils.to_unicode(x) + u'Label'
 			if parentReceiver.indigoDevice.pluginProps[sourcePropName] != "":
-				sourceOptions.append((str(x), "Source " + str(x) + ": " + parentReceiver.indigoDevice.pluginProps[sourcePropName]))
+				sourceOptions.append((RPFramework.RPFrameworkUtils.to_unicode(x), u'Source ' + RPFramework.RPFrameworkUtils.to_unicode(x) + u': ' + parentReceiver.indigoDevice.pluginProps[sourcePropName]))
 			
 		return sourceOptions
 		

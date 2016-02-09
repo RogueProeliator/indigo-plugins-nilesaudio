@@ -11,6 +11,8 @@
 #
 #	Version 1.0:
 #		* Initial release of the plugin to Indigo users
+#	Version 1.0.19 [2/8/2016]:
+#		* Updated to the latest framework version
 #
 #/////////////////////////////////////////////////////////////////////////////////////////
 #/////////////////////////////////////////////////////////////////////////////////////////
@@ -50,5 +52,33 @@ class Plugin(RPFramework.RPFrameworkPlugin.RPFrameworkPlugin):
 	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
 		# RP framework base class's init method
-		super(Plugin, self).__init__(pluginId, pluginDisplayName, pluginVersion, pluginPrefs, "http://www.duncanware.com/Downloads/IndigoHomeAutomation/Plugins/NilesAudioReceiver/NilesAudioReceiverVersionInfo.html", managedDeviceClassModule=nilesAudioDevices)
+		super(Plugin, self).__init__(pluginId, pluginDisplayName, pluginVersion, pluginPrefs, u'http://www.duncanware.com/Downloads/IndigoHomeAutomation/Plugins/NilesAudioReceiver/NilesAudioReceiverVersionInfo.html', managedDeviceClassModule=nilesAudioDevices)
 	
+	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
+	# This routine will be called from the user executing the menu item action to send
+	# an arbitrary command code to the Niles Audio receiver
+	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
+	def sendArbitraryCommand(self, valuesDict, typeId):
+		try:
+			deviceId = valuesDict.get(u'targetDevice', u'0')
+			commandCode = valuesDict.get(u'commandToSend', u'').strip()
+		
+			if deviceId == u'' or deviceId == u'0':
+				# no device was selected
+				errorDict = indigo.Dict()
+				errorDict[u'targetDevice'] = u'Please select a device'
+				return (False, valuesDict, errorDict)
+			elif commandCode == u'':
+				errorDict = indigo.Dict()
+				errorDict[u'commandToSend'] = u'Enter command to send'
+				return (False, valuesDict, errorDict)
+			else:
+				# send the code using the normal action processing...
+				actionParams = indigo.Dict()
+				actionParams[u'commandCode'] = commandCode
+				self.executeAction(pluginAction=None, indigoActionId=u'SendArbitraryCommand', indigoDeviceId=int(deviceId), paramValues=actionParams)
+				return (True, valuesDict)
+		except:
+			self.exceptionLog()
+			return (False, valuesDict)
+			
