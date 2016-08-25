@@ -1,0 +1,32 @@
+Niles Audio Receiver Indigo Plugin
+https://github.com/RogueProeliator/IndigoPlugins---Niles-Audio-Receiver
+
+To update to the latest version of the application, please download the latest release available at https://github.com/RogueProeliator/IndigoPlugins---Niles-Audio-Receiver/releases or via the Check For Updates menu option if you already have a version installed.
+
+=================================
+VERSION HISTORY
+=================================
+Version 1.1.19 [August 2016]:
+* Migrated code and updater to GitHub
+* Fixed bug that surfaced with Python 2.7 installs
+
+Version 1.0.19 [February 2016]:
+* Unicode support on devices names
+* Device state better set as error on failure to connect / maintain connection
+
+Version 1.0.14 [March 2015]:
+* Made changes to make plugin compatible with Python v2.6
+* Added new event that will fire whenever the plugin is updated
+* Added a graphical window for checking for updates (found via the Plugin's menu)
+
+Version 1.0.12 [November 2014]:
+* Slightly improved plugin response time when issuing several commands in a short amount of time
+
+Version 1.0.9 [July 2014]:
+* Added ability for the plugin to automatically re-establish a connection following a disconnection
+
+Version 1.0.6 [January 2014]:
+* Improved error handling when receiving unexpected/bad input
+
+Version 1.0.4 [December 2013]:
+This is the initial release of the program. Although every effort has been made to ensure that the plugin is working as advertised, there may be bugs or ommissions. Please check the Indigo Forums for help related to installing, updating or using this plugin.
