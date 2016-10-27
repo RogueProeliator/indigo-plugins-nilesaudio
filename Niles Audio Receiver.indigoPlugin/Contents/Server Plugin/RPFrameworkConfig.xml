@@ -177,7 +177,7 @@
 					<command>
 						<commandName>writeToTelnetConn</commandName>
 						<commandFormat><![CDATA[eval:"zsc,%dp:zoneNumber%," + ("12" if int("%ap:volumeAdjustment%")>0 else "13")]]></commandFormat>
-						<commandRepeatCount><![CDATA[eval:str(math.fabs(%ap:volumeAdjustment%))]]></commandRepeatCount>
+						<commandRepeatCount><![CDATA[eval:str(abs(%ap:volumeAdjustment%))]]></commandRepeatCount>
 						<commandRepeatDelay>0.1</commandRepeatDelay>
 					</command>
 					<command>
@@ -198,7 +198,7 @@
 					<command>
 						<commandName>writeToTelnetConn</commandName>
 						<commandFormat><![CDATA[eval:"zsc,%dp:zoneNumber%," + ("12" if int("%ap:volumeTarget%")>int("%ds:volume%") else "13")]]></commandFormat>
-						<commandRepeatCount><![CDATA[eval:str(math.fabs(%ap:volumeTarget% - %ds:volume%))]]></commandRepeatCount>
+						<commandRepeatCount><![CDATA[eval:str(abs(%ap:volumeTarget% - %ds:volume%))]]></commandRepeatCount>
 						<commandRepeatDelay>0.1</commandRepeatDelay>
 					</command>
 					<command>

@@ -1,6 +1,8 @@
 #Introduction
 This Indigo 6.0+ plugin allows Indigo to control a Niles Audio Multi-Zone Receiver (ZR-4 or ZR-6) without the need to purchase additional keypads or control points from Niles Audio (though the plugin can work in tandem with those as well.) This plugin connects via a serial connection to the Niles Audio Receiver and is able to both read and set nearly all aspects of the device.
 
+_**INDIGO 6 IMPORTANT NOTE:**_ The Indigo 6 version of this plugin is end-of-life with respect to new development, however the latest stable version on Indigo 6 is [still available](https://github.com/RogueProeliator/IndigoPlugins---Niles-Audio-Receiver/releases/tag/v1.1.19) on the releases page and is working as expected at the moment. Please consider an upgrade to Indigo 7 to support further development of our favorite HA platform!
+
 #Hardware Requirements
 This plugin should work with both the four and six zone receivers, ZR-4 and ZR-6 respectively, from Niles Audio. It does not require any additional hardware (such as keypads or touchscreens) for setup or operation... in fact, this plugin was originally conceived and built to avoid spending additional money on those! The plugin is able to control up to two additional slave ZR-6 receivers, allowing up to 18 zones of distributed audio.
 
