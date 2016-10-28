@@ -9,6 +9,7 @@ VERSION HISTORY
 Version 2.0.0 [??]:
 * Updated to full Indigo 7 support; Indigo 7 is now required for v2.0.0+
 * Updated the plugin to run without error on Python 2.7
+* Sped up Indigo's processing of zone updates when zone is On
 
 Version 1.1.19 [August 2016]:
 * Migrated code and updater to GitHub
