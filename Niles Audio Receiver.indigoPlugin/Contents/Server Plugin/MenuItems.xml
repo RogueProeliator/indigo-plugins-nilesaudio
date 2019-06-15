@@ -30,16 +30,12 @@
 		<CallbackMethod>toggleDebugEnabled</CallbackMethod>
 	</MenuItem>
 	<MenuItem id="debugDumpDeviceDetails">
-		<Name>Log Device Details</Name>
+		<Name>Log Device Details...</Name>
 		<CallbackMethod>dumpDeviceDetailsToLog</CallbackMethod>
 		<ButtonTitle>Output</ButtonTitle>
 		<ConfigUI>
-			<Field id="dumpDeviceDetailsToLog_Title" type="label" fontColor="darkGray">
-				<Label>DEVICE DETAILS DEBUG</Label>
-			</Field>
-			<Field id="dumpDeviceDetailsToLog_TitleSeparator" type="separator" />
 			<Field type="label" id="dumpDeviceDetailsToLogInstructions" fontSize="small">
-				<Label>This function will dump the details of a plugin device to the Indigo Event Log to aid in debugging and forum posts.</Label>
+				<Label>Outputs the details of a plugin device to the Indigo Event Log to aid in debugging and forum posts.</Label>
 			</Field>
 			<Field id="devicesToDump" type="list">
 				<Label>Devices to Log:</Label>
@@ -48,13 +44,26 @@
 		</ConfigUI>
 	</MenuItem>
 	<MenuItem id="updateSectionSeparator" />
-	<MenuItem id="checkForUpdateImmediate">
-		<Name>Check for Updates</Name>
+	<MenuItem id="viewLicense">
+		<Name>View License...</Name>
 		<ConfigUI>
-			<Field id="versionCheckTitle" type="label" fontColor="darkGray">
-				<Label>PLUGIN UPDATE CHECK</Label>
+			<Field id="licenseText" type="label" fontSize="small">
+				<Label>MIT License
+
+Copyright (c) [2013 - Present] [Adam A. (@RogueProeliator)]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+				</Label>
 			</Field>
-			<Field id="versionCheckTitleSeparator" type="separator" />
+		</ConfigUI>
+	</MenuItem>
+	<MenuItem id="checkForUpdateImmediate">
+		<Name>Check for Updates...</Name>
+		<ConfigUI>
 			<Field id="currentVersion" type="textfield" readonly="true">
 				<Label>Current Version:</Label>
 			</Field>
@@ -67,18 +76,11 @@
 			<Field id="versionCheckUpdateAvailableMsg" type="label" alignWithControl="true" fontColor="blue" visibleBindingId="versionCheckResults" visibleBindingValue="1">
 				<Label>A new version of the plugin is available for download. Please visit the forums for information.</Label>
 			</Field>
-			<Field id="versionCheckLaunchHelpUrl" type="button" visibleBindingId="versionCheckResults" visibleBindingValue="1">
-				<Title>Download Update</Title>
-				<CallbackMethod>initiateUpdateDownload</CallbackMethod>
-			</Field>
 			<Field id="versionCheckUpdateCurrentMsg" type="label" alignWithControl="true" fontColor="black" visibleBindingId="versionCheckResults" visibleBindingValue="2">
 				<Label>Your plugin is currently up-to-date; thanks for checking!</Label>
 			</Field>
 			<Field id="versionCheckUpdateErrorMsg" type="label" alignWithControl="true" fontColor="red" visibleBindingId="versionCheckResults" visibleBindingValue="3">
 				<Label>An error was encountered while checking your plugin version. Please try again later.</Label>
-			</Field>
-			<Field id="updateInProgressMsg" type="label" alignWithControl="true" fontColor="blue" visibleBindingId="versionCheckResults" visibleBindingValue="4">
-				<Label>Your download has been initiated; you will get the standard Indigo dialog confirming the plugin update on the server once it is ready.</Label>
 			</Field>
 		</ConfigUI>
 	</MenuItem>
