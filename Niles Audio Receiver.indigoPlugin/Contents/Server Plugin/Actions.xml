@@ -9,8 +9,8 @@
 		<Name>Party Zones - Mute All</Name>
 		<CallbackMethod>executeAction</CallbackMethod>
 	</Action>
-	<Action id="sep01" />
-	
+
+	<Action id="sep01" uiPath="DeviceActions" />
 	<Action id="tuneToStation" uiPath="DeviceActions" deviceFilter="self.nilesAudioReceiver">
 		<Name>Tune to Radio Station</Name>
 		<ConfigUI>
@@ -23,9 +23,9 @@
 		</ConfigUI>
 		<CallbackMethod>executeAction</CallbackMethod>
 	</Action>
-	<Action id="sep02" />
-	
+
 	<!-- Actions which are generated into zone-specific commands -->
+	<Action id="sep02" uiPath="DeviceActions" />
 	<Action id="changeZonePower" uiPath="DeviceActions" deviceFilter="self.nilesAudioZone">
 		<Name>Zone Power - Set Value</Name>
 		<ConfigUI>
@@ -43,8 +43,8 @@
 		<Name>Zone Power - Toggle</Name>
 		<CallbackMethod>executeAction</CallbackMethod>
 	</Action>
-	<Action id="sep03" />
-	
+
+	<Action id="sep03" uiPath="DeviceActions" />
 	<Action id="changeZoneSource" uiPath="DeviceActions" deviceFilter="self.nilesAudioZone">
 		<Name>Set Zone Source</Name>
 		<ConfigUI>
@@ -55,8 +55,8 @@
 		</ConfigUI>
 		<CallbackMethod>executeAction</CallbackMethod>
 	</Action>
-	<Action id="sep04" />
-	
+
+	<Action id="sep04" uiPath="DeviceActions" />
 	<Action id="setZoneVolume" uiPath="DeviceActions" deviceFilter="self.nilesAudioZone">
 		<Name>Zone Volume - Set Value</Name>
 		<ConfigUI>

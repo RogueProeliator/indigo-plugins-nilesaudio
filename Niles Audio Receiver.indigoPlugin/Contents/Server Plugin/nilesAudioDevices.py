@@ -25,7 +25,7 @@ import RPFramework
 # Constants and configuration variables
 #/////////////////////////////////////////////////////////////////////////////////////////
 CMD_CREATEZONESTATUSUPDATECOMMAND = "createZoneStatusUpdateCommands"
-CMD_ACTIVATEZONEFORCOMMAND = "activateZoneForCommand"
+CMD_ACTIVATEZONEFORCOMMAND        = "activateZoneForCommand"
 
 
 #/////////////////////////////////////////////////////////////////////////////////////////
@@ -80,11 +80,11 @@ class NilesAudioReceiverDevice(RPFramework.RPFrameworkTelnetDevice.RPFrameworkTe
 			# this command will immediately activate the requested zone (per the payload)
 			# for control if it is not already active
 			if self.activeControlZone != int(rpCommand.commandPayload):
-				self.hostPlugin.logger.threaddebug(u'Writing activate zone request for zone ' + RPFramework.RPFrameworkUtils.to_unicode(rpCommand.commandPayload))
-				writeCommand = "znc,4," + rpCommand.commandPayload + "\r"
+				self.hostPlugin.logger.threaddebug(u'Writing activate zone request for zone {0}'.format(rpCommand.commandPayload))
+				writeCommand = "znc,4,{0}\r".format(rpCommand.commandPayload)
 				ipConnection.write(writeCommand.encode("ascii"))
 			else:
-				self.hostPlugin.logger.threaddebug(u'Zone ' + RPFramework.RPFrameworkUtils.to_unicode(rpCommand.commandPayload) + u' already active, ignoring activate zone command for efficiency')
+				self.hostPlugin.logger.threaddebug(u'Zone {0} already active, ignoring activate zone command for efficiency'.format(rpCommand.commandPayload))
 				
 			# ensure that the delay is in place...
 			if rpCommand.postCommandPause == 0.0:
@@ -96,8 +96,8 @@ class NilesAudioReceiverDevice(RPFramework.RPFrameworkTelnetDevice.RPFrameworkTe
 			muteCommandList = []
 			for zoneNumber in self.childDevices:
 				if self.childDevices[zoneNumber].indigoDevice.states[u'isPoweredOn'] == True and self.childDevices[zoneNumber].indigoDevice.states[u'isMuted'] == False:
-					self.hostPlugin.logger.threaddebug("Mute All: muting zone " + str(zoneNumber))
-					muteCommandList.append(RPFramework.RPFrameworkCommand.RPFrameworkCommand(RPFramework.RPFrameworkTelnetDevice.CMD_WRITE_TO_DEVICE, commandPayload="zsc," + zoneNumber + ",11", postCommandPause=0.1))
+					self.hostPlugin.logger.threaddebug("Mute All: muting zone {0}".format(zoneNumber))
+					muteCommandList.append(RPFramework.RPFrameworkCommand.RPFrameworkCommand(RPFramework.RPFrameworkTelnetDevice.CMD_WRITE_TO_DEVICE, commandPayload="zsc,{0},11".format(zoneNumber), postCommandPause=0.1))
 					muteCommandList.append(RPFramework.RPFrameworkCommand.RPFrameworkCommand(CMD_CREATEZONESTATUSUPDATECOMMAND, commandPayload=str(zoneNumber), postCommandPause=0.1))
 			self.queueDeviceCommands(muteCommandList)
 	
@@ -132,7 +132,7 @@ class NilesAudioReceiverDevice(RPFramework.RPFrameworkTelnetDevice.RPFrameworkTe
 		
 		# device status updates are expensive, so only do the update on statuses that are
 		# different than current
-		self.hostPlugin.logger.debug(u'Received status update for Zone ' + RPFramework.RPFrameworkUtils.to_unicode(statusInfo["zone"]) + u': ' + RPFramework.RPFrameworkUtils.to_unicode(responseObj))
+		self.hostPlugin.logger.debug(u'Received status update for Zone {0}: {1}'.format(statusInfo["zone"], responseObj))
 		zoneDevice = self.childDevices[statusInfo["zone"]]
 
 		# get the on/off status as this will determine what info we update; do not update it now
@@ -194,7 +194,7 @@ class NilesAudioReceiverDevice(RPFramework.RPFrameworkTelnetDevice.RPFrameworkTe
 		responseParser = re.compile(r'^rznc,4,(\d+)\s*$', re.I)
 		matchObj = responseParser.match(responseObj)
 		self.activeControlZone = int(matchObj.group(1))
-		self.hostPlugin.logger.threaddebug(u'Updated active control zone to ' + RPFramework.RPFrameworkUtils.to_unicode(matchObj.group(1)))
+		self.hostPlugin.logger.threaddebug(u'Updated active control zone to {0}'.format(matchObj.group(1)))
 				
 		
 #/////////////////////////////////////////////////////////////////////////////////////////
@@ -234,7 +234,7 @@ class NilesAudioZone(RPFramework.RPFrameworkNonCommChildDevice.RPFrameworkNonCom
 		for x in range(1,7):
 			sourcePropName = u'source' + RPFramework.RPFrameworkUtils.to_unicode(x) + u'Label'
 			if parentReceiver.indigoDevice.pluginProps[sourcePropName] != "":
-				sourceOptions.append((RPFramework.RPFrameworkUtils.to_unicode(x), u'Source ' + RPFramework.RPFrameworkUtils.to_unicode(x) + u': ' + parentReceiver.indigoDevice.pluginProps[sourcePropName]))
+				sourceOptions.append((RPFramework.RPFrameworkUtils.to_unicode(x), u'Source {0}: {1}'.format(x, parentReceiver.indigoDevice.pluginProps[sourcePropName])))
 			
 		return sourceOptions
 		

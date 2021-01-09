@@ -14,7 +14,8 @@
 			<Field type="label" id="commOptionsSpacer" fontSize="small">
 				<Label></Label>
 			</Field>
-			<Field id="commOptionsTitle" type="label" fontColor="darkGray">
+
+			<Field id="commOptionsTitle" type="label" fontColor="darkGray" fontSize="small">
 				<Label>COMMUNICATION OPTIONS</Label>
 			</Field>
 			<Field id="instructionSeparator2" type="separator" />
@@ -31,7 +32,8 @@
 			<Field type="label" id="sourceSeparator" fontSize="small">
 				<Label></Label>
 			</Field>
-			<Field id="sourceTitle" type="label" fontColor="darkGray">
+			
+			<Field id="sourceTitle" type="label" fontColor="darkGray" fontSize="small">
 				<Label>SOURCE DEFINITIONS</Label>
 			</Field>
 			<Field id="sourceSeparator2" type="separator" />

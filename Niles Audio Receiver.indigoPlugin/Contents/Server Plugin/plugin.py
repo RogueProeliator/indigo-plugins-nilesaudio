@@ -9,11 +9,6 @@
 #	Command structure based on Niles Audio's published specification found in the ZR-6
 #	instruction manual
 #
-#	Version 1.0:
-#		* Initial release of the plugin to Indigo users
-#	Version 1.0.19 [2/8/2016]:
-#		* Updated to the latest framework version
-#
 #/////////////////////////////////////////////////////////////////////////////////////////
 #/////////////////////////////////////////////////////////////////////////////////////////
 

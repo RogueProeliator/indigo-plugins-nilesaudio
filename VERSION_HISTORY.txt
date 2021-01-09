@@ -6,7 +6,11 @@ To update to the latest version of the application, please download the latest r
 =================================
 VERSION HISTORY
 =================================
-Version 2.2.1 [June 2019]:
+Version 2.2.0 [January 2021]:
+* Updated UI to meet latest Indigo standards
+* Slightly reduced resource usage
+
+Version 2.1.0 [June 2019]:
 * Brought plugin up to Indigo 7.1+ standards
 * Updated version check to avoid duplicate calls
 
