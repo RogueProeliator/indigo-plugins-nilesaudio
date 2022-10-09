@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@v1
     - uses: montudor/action-zip@v1
       with:
-        args: zip -qq -r "Niles Audio Receiver.indigoPlugin.zip" "Niles Audio Receiver.indigoPlugin"
+        args: zip -qq -r "Niles Audio Receiver.indigoPlugin.zip" "src/Niles Audio Receiver.indigoPlugin"
   
     - uses: ncipollo/release-action@v1
       with:
