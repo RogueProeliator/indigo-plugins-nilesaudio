@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #/////////////////////////////////////////////////////////////////////////////////////////
-#/////////////////////////////////////////////////////////////////////////////////////////
 # Niles Audio Receiver Plugin by RogueProeliator <rp@rogueproeliator.com>
 # 	Indigo plugin designed to allow full control of a Niles Audio receiver such as the
 #	ZR-4 and ZR-6
@@ -9,7 +8,6 @@
 #	Command structure based on Niles Audio's published specification found in the ZR-6
 #	instruction manual
 #
-#/////////////////////////////////////////////////////////////////////////////////////////
 #/////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -30,11 +28,9 @@ import nilesAudioDevices
 
 
 #/////////////////////////////////////////////////////////////////////////////////////////
-#/////////////////////////////////////////////////////////////////////////////////////////
 # Plugin
 #	Primary Indigo plugin class that is universal for all receiver devices to be
 #	controlled (this represents the master receiver)
-#/////////////////////////////////////////////////////////////////////////////////////////
 #/////////////////////////////////////////////////////////////////////////////////////////
 class Plugin(RPFramework.RPFrameworkPlugin.RPFrameworkPlugin):
 	
@@ -47,7 +43,7 @@ class Plugin(RPFramework.RPFrameworkPlugin.RPFrameworkPlugin):
 	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
 		# RP framework base class's init method
-		super(Plugin, self).__init__(pluginId, pluginDisplayName, pluginVersion, pluginPrefs, managedDeviceClassModule=nilesAudioDevices)
+		super().__init__(pluginId, pluginDisplayName, pluginVersion, pluginPrefs, managedDeviceClassModule=nilesAudioDevices)
 	
 	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
 	# This routine will be called from the user executing the menu item action to send
@@ -55,23 +51,23 @@ class Plugin(RPFramework.RPFrameworkPlugin.RPFrameworkPlugin):
 	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
 	def sendArbitraryCommand(self, valuesDict, typeId):
 		try:
-			deviceId = valuesDict.get(u'targetDevice', u'0')
-			commandCode = valuesDict.get(u'commandToSend', u'').strip()
+			deviceId = valuesDict.get("targetDevice", "0")
+			commandCode = valuesDict.get("commandToSend", "").strip()
 		
-			if deviceId == u'' or deviceId == u'0':
+			if deviceId == "" or deviceId == "0":
 				# no device was selected
 				errorDict = indigo.Dict()
-				errorDict[u'targetDevice'] = u'Please select a device'
+				errorDict["targetDevice"] = "Please select a device"
 				return (False, valuesDict, errorDict)
 			elif commandCode == u'':
 				errorDict = indigo.Dict()
-				errorDict[u'commandToSend'] = u'Enter command to send'
+				errorDict["commandToSend"] = "Enter command to send"
 				return (False, valuesDict, errorDict)
 			else:
 				# send the code using the normal action processing...
 				actionParams = indigo.Dict()
-				actionParams[u'commandCode'] = commandCode
-				self.executeAction(pluginAction=None, indigoActionId=u'SendArbitraryCommand', indigoDeviceId=int(deviceId), paramValues=actionParams)
+				actionParams["commandCode"] = commandCode
+				self.executeAction(pluginAction=None, indigoActionId="SendArbitraryCommand", indigoDeviceId=int(deviceId), paramValues=actionParams)
 				return (True, valuesDict)
 		except:
 			self.exceptionLog()
