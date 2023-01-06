@@ -2,7 +2,7 @@
 <MenuItems>
 	<MenuItem id="sendNonDocumentedCommand">
 		<Name>Send Arbitrary Command</Name>
-		<CallbackMethod>sendArbitraryCommand</CallbackMethod>
+		<CallbackMethod>send_arbitrary_command</CallbackMethod>
 		<ButtonTitle>Send</ButtonTitle>
 		<ConfigUI>
 			<Field type="label" id="commandSendInstructions" fontSize="small">
@@ -24,11 +24,11 @@
 	<MenuItem id="deviceCmdsSeparator" type="separator" />
 	<MenuItem id="toggleDebug">
 		<Name>Toggle Debugging On/Off</Name>
-		<CallbackMethod>toggleDebugEnabled</CallbackMethod>
+		<CallbackMethod>toggle_debug_enabled</CallbackMethod>
 	</MenuItem>
 	<MenuItem id="debugDumpDeviceDetails">
 		<Name>Log Device Details</Name>
-		<CallbackMethod>dumpDeviceDetailsToLog</CallbackMethod>
+		<CallbackMethod>dump_device_details_to_log</CallbackMethod>
 		<ButtonTitle>Output</ButtonTitle>
 		<ConfigUI>
 			<Field id="dumpDeviceDetailsToLog_Title" type="label" fontColor="darkGray">

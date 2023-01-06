@@ -6,17 +6,9 @@
 	<Field id="pluginAuthorLabel" type="label" fontSize="small">
         <Label>Developed by RogueProeliator</Label>
     </Field>
-
-	<Field type="label" id="aboutSpacer" fontSize="small">
-		<Label></Label>
-	</Field>
-	<Field id="aboutTitle" type="label" fontColor="darkGray">
-		<Label>ABOUT</Label>
-	</Field>
-	<Field id="aboutSeparator" type="separator" />
-	<Field id="pluginDescriptionLabel" type="label" fontSize="small">
-		<Label>This Indigo plugin allows Indigo to act as a controller for Niles Audio multi-zone receivers and some Monoprice equivalent models.</Label>
-	</Field>
+	<Field id="pluginDescriptionLabel" type="label" fontSize="small" fontColor="darkGray">
+        <Label>This Indigo plugin allows Indigo to act as a controller for Niles Audio multi-zone receivers and some Monoprice equivalent models.</Label>
+    </Field>
 	
 	<Field type="label" id="debugSpacer" fontSize="small">
 		<Label></Label>
