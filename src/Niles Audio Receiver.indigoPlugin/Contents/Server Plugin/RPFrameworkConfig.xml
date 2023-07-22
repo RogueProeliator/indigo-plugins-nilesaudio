@@ -41,7 +41,7 @@
 						<matchExpression><![CDATA[^usc,2,(?P<zone>\d+),(?P<source>\d+),(?P<onOff>0|1),(?P<volume>\d+),(?P<mute>0|1),(?P<base>\d+),(?P<treble>\d+)\s*$]]></matchExpression>
 						<effects>
 							<effect effectType="RESPONSE_EFFECT_CALLBACK" evalResult="false">
-								<updateParam>zoneStatusResponseReceived</updateParam>
+								<updateParam>zone_status_response_received</updateParam>
 								<updateValueFormat></updateValueFormat>
 							</effect>
 						</effects>
@@ -51,7 +51,7 @@
 						<matchExpression><![CDATA[^rznc,4,(\d+)\s*$]]></matchExpression>
 						<effects>
 							<effect effectType="RESPONSE_EFFECT_CALLBACK" evalResult="false">
-								<updateParam>activeControlZoneUpdated</updateParam>
+								<updateParam>active_control_zone_updated</updateParam>
 								<updateValueFormat></updateValueFormat>
 							</effect>
 						</effects>

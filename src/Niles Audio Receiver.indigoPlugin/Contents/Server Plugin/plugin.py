@@ -1,46 +1,42 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-#/////////////////////////////////////////////////////////////////////////////////////////
+#######################################################################################
 # Niles Audio Receiver Plugin by RogueProeliator <rp@rogueproeliator.com>
-# 	Indigo plugin designed to allow full control of a Niles Audio receiver such as the
-#	ZR-4 and ZR-6
-#	
-#	Command structure based on Niles Audio's published specification found in the ZR-6
-#	instruction manual
-#/////////////////////////////////////////////////////////////////////////////////////////
+# Indigo plugin designed to allow full control of a Niles Audio receiver such as the
+# ZR-4 and ZR-6
+#
+# Command structure based on Niles Audio's published specification found in the ZR-6
+# instruction manual
+#######################################################################################
 
-#/////////////////////////////////////////////////////////////////////////////////////////
-#region Python imports
-
+# region Python imports
 import nilesAudioDevices
+
 from RPFramework.RPFrameworkPlugin import RPFrameworkPlugin
-
-#endregion
-#/////////////////////////////////////////////////////////////////////////////////////////
+# endregion
 
 
-#/////////////////////////////////////////////////////////////////////////////////////////
-# Plugin
-#	Primary Indigo plugin class that is universal for all receiver devices to be
-#	controlled (this represents the master receiver)
-#/////////////////////////////////////////////////////////////////////////////////////////
 class Plugin(RPFrameworkPlugin):
 	
-	#/////////////////////////////////////////////////////////////////////////////////////
-	# Class construction and destruction methods
-	#/////////////////////////////////////////////////////////////////////////////////////
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	#######################################################################################
+	# region Class construction and destruction methods
+	# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	# Constructor called once upon plugin class creation; set up the device tracking
 	# variables for later use
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
 		# RP framework base class's init method
-		super().__init__(pluginId, pluginDisplayName, pluginVersion, pluginPrefs, managedDeviceClassModule=nilesAudioDevices)
-	
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
+		super().__init__(pluginId, pluginDisplayName, pluginVersion, pluginPrefs, managed_device_class_module=nilesAudioDevices)
+
+	# endregion
+	#######################################################################################
+
+	#######################################################################################
+	# region Actions object callback handlers/routines
+	# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	# This routine will be called from the user executing the menu item action to send
-	# an arbitrary command code to the Niles Audio receiver
-	#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-	
+	# an arbitrary command code to the Onkyo receiver
+	# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 	def send_arbitrary_command(self, valuesDict, typeId):
 		try:
 			device_id    = valuesDict.get("targetDevice", "0")
@@ -64,4 +60,6 @@ class Plugin(RPFrameworkPlugin):
 		except:
 			self.logger.exception("Failed to send command to device")
 			return False, valuesDict
-			
+
+	# endregion
+	#######################################################################################
