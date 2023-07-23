@@ -26,9 +26,8 @@ jobs:
       uses: montudor/action-zip@v1
         
     - name: Zip Plugin Artifact
-      with:
-        args: zip -qq -r "Niles Audio Receiver.indigoPlugin.zip" "Niles Audio Receiver.indigoPlugin"
-        working-directory: src
+      run: zip -qq -r "Niles Audio Receiver.indigoPlugin.zip" "Niles Audio Receiver.indigoPlugin"
+      working-directory: src
 
     - uses: ncipollo/release-action@v1
       with:
