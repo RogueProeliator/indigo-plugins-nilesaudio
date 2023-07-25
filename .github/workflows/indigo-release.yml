@@ -32,6 +32,6 @@ jobs:
     - uses: ncipollo/release-action@v1
       with:
         tag: ${{ github.event.inputs.release_num }}
-        artifacts: "Niles Audio Receiver.indigoPlugin.zip"
+        artifacts: "src/Niles Audio Receiver.indigoPlugin.zip"
         body: "Release"
         prerelease: ${{ github.event.inputs.is_prerelease }}
