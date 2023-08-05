@@ -25,6 +25,7 @@
 					<telnetConnectionDeviceStateBoolean>isConnected</telnetConnectionDeviceStateBoolean>
 					<updateStatusPollerIntervalProperty>zonePollInterval</updateStatusPollerIntervalProperty>
 					<updateStatusPollerActionId>updateDeviceStatesFromReceiver</updateStatusPollerActionId>
+					<updateStatusPollInitialDelay>2.0</updateStatusPollInitialDelay>
 					<serialPortName><![CDATA[%dp:serialPort%]]></serialPortName>
 					<serialPortBaud>38400</serialPortBaud>
 					<serialPortParity>PARITY_NONE</serialPortParity>
