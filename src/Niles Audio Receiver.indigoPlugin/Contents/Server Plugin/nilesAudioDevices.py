@@ -63,7 +63,7 @@ class NilesAudioReceiverDevice(RPFrameworkTelnetDevice):
 			# queue up all the commands at once (so they will run back to back)
 			self.queue_device_commands(update_command_list)
 			
-		elif rp_command.commandName == CMD_ACTIVATEZONEFORCOMMAND:
+		elif rp_command.command_name == CMD_ACTIVATEZONEFORCOMMAND:
 			# this command will immediately activate the requested zone (per the payload)
 			# for control if it is not already active
 			if self.active_control_zone != int(rp_command.command_payload):
