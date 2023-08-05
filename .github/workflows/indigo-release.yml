@@ -21,14 +21,17 @@ jobs:
     - uses: actions/checkout@v1
       with:
         submodules: recursive
-    - uses: montudor/action-zip@v1
-      with:
-        args: zip -qq -r "Niles Audio Receiver.indigoPlugin.zip" "Niles Audio Receiver.indigoPlugin"
-        working-directory: src
+        
+    - name: Install Zip Archiver
+      uses: montudor/action-zip@v1
+        
+    - name: Zip Plugin Artifact
+      run: zip -qq -r "Niles Audio Receiver.indigoPlugin.zip" "Niles Audio Receiver.indigoPlugin"
+      working-directory: src
 
     - uses: ncipollo/release-action@v1
       with:
         tag: ${{ github.event.inputs.release_num }}
-        artifacts: "Niles Audio Receiver.indigoPlugin.zip"
+        artifacts: "src/Niles Audio Receiver.indigoPlugin.zip"
         body: "Release"
         prerelease: ${{ github.event.inputs.is_prerelease }}
