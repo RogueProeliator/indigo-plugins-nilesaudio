@@ -46,7 +46,7 @@ class NilesAudioReceiverDevice(RPFrameworkTelnetDevice):
 	# This routine will process the commands that are not processed automatically by the
 	# base class; it will be called on a concurrent thread
 	# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-	def handleUnmanagedCommandInQueue(self, ip_connection, rp_command):
+	def handle_unmanaged_command_in_queue(self, ip_connection, rp_command):
 		if rp_command.commandName == CMD_CREATEZONESTATUSUPDATECOMMAND:
 			# create a set of commands to update the status of a single zone
 			update_command_list = [self.create_zone_activate_command(rp_command.command_payload), self.create_zone_status_request_command(rp_command.command_payload)]
