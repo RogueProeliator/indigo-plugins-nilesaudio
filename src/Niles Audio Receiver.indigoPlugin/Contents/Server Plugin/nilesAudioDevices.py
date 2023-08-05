@@ -67,17 +67,17 @@ class NilesAudioReceiverDevice(RPFrameworkTelnetDevice):
 			# this command will immediately activate the requested zone (per the payload)
 			# for control if it is not already active
 			if self.active_control_zone != int(rp_command.command_payload):
-				self.host_plugin.logger.threaddebug(f"Writing activate zone request for zone {rp_command.commandPayload}")
-				write_command = f"znc,4,{rp_command.commandPayload}\r"
+				self.host_plugin.logger.threaddebug(f"Writing activate zone request for zone {rp_command.command_payload}")
+				write_command = f"znc,4,{rp_command.command_payload}\r"
 				ip_connection.write(write_command.encode("ascii"))
 			else:
-				self.host_plugin.logger.threaddebug(f"Zone {rp_command.commandPayload} already active, ignoring activate zone command for efficiency")
+				self.host_plugin.logger.threaddebug(f"Zone {rp_command.command_payload} already active, ignoring activate zone command for efficiency")
 				
 			# ensure that the delay is in place...
 			if rp_command.post_command_pause == 0.0:
 				rp_command.post_command_pause = 0.1
 				
-		elif rp_command.commandName == "createAllZonesMuteCommands":
+		elif rp_command.command_name == "createAllZonesMuteCommands":
 			# this command will be fired whenever the plugin needs to create the commands that will mute
 			# all zones (must be done individually)
 			mute_command_list = []
