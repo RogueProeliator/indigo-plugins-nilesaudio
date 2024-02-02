@@ -14,11 +14,11 @@
 	<Action id="tuneToStation" uiPath="DeviceActions" deviceFilter="self.nilesAudioReceiver">
 		<Name>Tune to Radio Station</Name>
 		<ConfigUI>
-			<Field id="instructions" type="label" fontSize="small">
-				<Label>Use ###.# format for FM stations and #### for AM; preceding zeroes will be automatically added if necessary to conform to the requested format.</Label>
-			</Field>
 			<Field id="stationNumber" type="textfield">
 				<Label>Station:</Label>
+			</Field>
+			<Field id="instructions" type="label" fontSize="small">
+				<Label>Use ###.# format for FM stations and #### for AM; preceding zeroes will be automatically added if necessary to conform to the requested format.</Label>
 			</Field>
 		</ConfigUI>
 		<CallbackMethod>execute_action</CallbackMethod>
@@ -60,9 +60,6 @@
 	<Action id="setZoneVolume" uiPath="DeviceActions" deviceFilter="self.nilesAudioZone">
 		<Name>Zone Volume - Set Value</Name>
 		<ConfigUI>
-			<Field id="instructions" type="label" fontSize="small">
-				<Label>This action relies on the current state of the device in Indigo; if you are using non-Indigo controls such as wall pads, please be sure polling for status is setup in the device configuration dialog.</Label>
-			</Field>
 			<Field id="volumeTarget" type="textfield">
 				<Label>Set To (0-100):</Label>
 			</Field>
@@ -72,11 +69,11 @@
 	<Action id="adjustZoneVolume" uiPath="DeviceActions" deviceFilter="self.nilesAudioZone">
 		<Name>Zone Volume - Adjust Up/Down</Name>
 		<ConfigUI>
-			<Field id="instructions" type="label" fontSize="small">
-				<Label>This action relies on the current state of the device in Indigo; if you are using non-Indigo controls such as wall pads, please be sure polling for status is setup in the device configuration dialog.</Label>
-			</Field>
 			<Field id="volumeAdjustment" type="textfield">
 				<Label>Adjust By (negative allowed):</Label>
+			</Field>
+			<Field id="instructions" type="label" fontSize="small">
+				<Label>This action relies on the current state of the device in Indigo; if you are using non-Indigo controls such as wall pads, please be sure polling for status is setup in the device configuration dialog.</Label>
 			</Field>
 		</ConfigUI>
 		<CallbackMethod>execute_action</CallbackMethod>
@@ -84,9 +81,6 @@
 	<Action id="setZoneMute" uiPath="DeviceActions" deviceFilter="self.nilesAudioZone">
 		<Name>Zone Mute - Set Value</Name>
 		<ConfigUI>
-			<Field id="instructions" type="label" fontSize="small">
-				<Label>This action relies on the current state of the device in Indigo; if you are using non-Indigo controls such as wall pads, please be sure polling for status is setup in the device configuration dialog.</Label>
-			</Field>
 			<Field type="menu" id="muteState">
 				<Label>Turn Zone Mute:</Label>
 				<List>

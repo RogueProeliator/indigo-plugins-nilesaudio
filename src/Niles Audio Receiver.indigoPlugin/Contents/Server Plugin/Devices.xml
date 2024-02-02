@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <Devices>
 
-	<!-- this device represents the main Niles Audio receiver that is controlling the -->
-	<!-- connected zones... only the MAIN receiver need be defined, not any slave -->
+	<!-- this device represents the main Niles Audio receiver that is controlling the  -->
+	<!-- connected zones... only the MAIN receiver need be defined, not any slave      -->
 	<!-- receivers as they are controlled by the main. This is the one with the serial -->
-	<!-- connection to the server -->
+	<!-- connection to the server                                                      -->
 	<Device type="custom" id="nilesAudioReceiver">
 		<Name>Niles Audio ZR-4/ZR-6 Receiver</Name>
 		<ConfigUI>	
