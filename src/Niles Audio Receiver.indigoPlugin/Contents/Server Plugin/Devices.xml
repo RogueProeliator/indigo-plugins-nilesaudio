@@ -15,7 +15,7 @@
 				<Label></Label>
 			</Field>
 
-			<Field id="commOptionsTitle" type="label" fontSize="small">
+			<Field id="commOptionsTitle" type="label" fontSize="small" >
 				<Label>COMMUNICATION OPTIONS</Label>
 			</Field>
 			<Field id="instructionSeparator2" type="separator" />
