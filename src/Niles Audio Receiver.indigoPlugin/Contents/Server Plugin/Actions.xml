@@ -50,7 +50,7 @@
 		<ConfigUI>
 			<Field type="menu" id="zoneSource">
 				<Label>Set Source:</Label>
-				<List class="self" filter="" method="getConfigDialogMenu" />
+				<List class="self" filter="" method="getConfigDialogMenu" dynamicReload="true" />
 			</Field>
 		</ConfigUI>
 		<CallbackMethod>execute_action</CallbackMethod>
