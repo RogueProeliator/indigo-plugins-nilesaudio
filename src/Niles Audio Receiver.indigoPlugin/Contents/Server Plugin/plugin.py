@@ -20,7 +20,7 @@ from typing import Dict, List, Optional, Tuple
 
 import indigo
 
-from niles_receiver import NilesReceiver
+from niles_receiver import NilesReceiver, MAX_VOLUME, BRIGHTNESS_TO_VOLUME_FACTOR
 from niles_zone import NilesZone
 # endregion
 
@@ -101,6 +101,43 @@ class Plugin(indigo.PluginBase):
                 dev.updateStateOnServer('connectionState', value='Starting')
         
         self.logger.info("Plugin started successfully")
+
+    def upgrade_zone_devices_to_dimmer(self, values_dict: indigo.Dict = None,
+                                        type_id: str = "") -> None:
+        """
+        Menu callback to upgrade legacy zone devices to dimmer type.
+        
+        This method converts legacy custom zone devices (nilesAudioZone) to the 
+        new dimmer-based zone type (nilesAudioZoneDimmer), which allows native 
+        volume control in Indigo clients.
+        
+        Args:
+            values_dict: Menu dialog values (unused)
+            type_id: Menu type identifier (unused)
+        """
+        upgrade_count = 0
+        
+        for dev in indigo.devices.iter("self"):
+            # Convert legacy nilesAudioZone (custom) to nilesAudioZoneDimmer (dimmer)
+            if dev.deviceTypeId == 'nilesAudioZone':
+                try:
+                    self.logger.info(f"Upgrading zone device '{dev.name}' from legacy custom type to dimmer type")
+                    
+                    # Change the device type - this preserves all properties and states
+                    new_dev = indigo.device.changeDeviceTypeId(dev, 'nilesAudioZoneDimmer')
+                    
+                    # The old device reference is now stale, use new_dev going forward
+                    # Force a state list refresh to pick up the dimmer states
+                    new_dev.stateListOrDisplayStateIdChanged()
+                    
+                    upgrade_count += 1
+                    self.logger.info(f"Successfully upgraded '{new_dev.name}' to dimmer type")
+                    
+                except Exception as e:
+                    self.logger.error(f"Failed to upgrade zone device '{dev.name}': {e}")
+        
+        if upgrade_count > 0:
+            self.logger.info(f"Upgraded {upgrade_count} zone device(s) to dimmer type")
 
     def shutdown(self) -> None:
         """
@@ -193,7 +230,7 @@ class Plugin(indigo.PluginBase):
                 
                 self.logger.debug(f"Receiver {dev.name} communication started")
                 
-            elif dev.deviceTypeId == 'nilesAudioZone':
+            elif dev.deviceTypeId in ('nilesAudioZone', 'nilesAudioZoneDimmer'):
                 # Update initial state
                 dev.updateStateOnServer('isPoweredOn', value=False, uiValue='Starting')
                 
@@ -245,7 +282,7 @@ class Plugin(indigo.PluginBase):
                 dev.setErrorStateOnServer("")
                 dev.updateStateOnServer('connectionState', value='Disabled')
                 
-            elif dev.deviceTypeId == 'nilesAudioZone':
+            elif dev.deviceTypeId in ('nilesAudioZone', 'nilesAudioZoneDimmer'):
                 # Unregister from parent receiver
                 receiver_id = int(dev.pluginProps.get('sourceReceiver', '0'))
                 if receiver_id in self.managed_receivers:
@@ -336,7 +373,7 @@ class Plugin(indigo.PluginBase):
                     self.logger.warning(f"Unknown receiver action: {action_id}")
             
             # Handle zone-specific actions
-            elif dev.deviceTypeId == 'nilesAudioZone':
+            elif dev.deviceTypeId in ('nilesAudioZone', 'nilesAudioZoneDimmer'):
                 # Get the parent receiver for this zone
                 receiver_id = int(dev.pluginProps.get('sourceReceiver', '0'))
                 if receiver_id not in self.managed_receivers:
@@ -387,6 +424,91 @@ class Plugin(indigo.PluginBase):
     # ========================================================================
     
     # ========================================================================
+    # region Standard Device Actions (On/Off/Brightness)
+    # ========================================================================
+    def actionControlDimmerRelay(self, action: indigo.ActionGroup, dev: indigo.Device) -> None:
+        """
+        Handle standard dimmer/relay actions for zone devices.
+        
+        Zone devices are defined as dimmers, so we implement brightness as volume control.
+        
+        Args:
+            action: The dimmer action to execute
+            dev: The target zone device
+        """
+        if dev.deviceTypeId != 'nilesAudioZoneDimmer':
+            self.logger.warning(f"Dimmer action called on non-dimmer device: {dev.name}")
+            return
+        
+        # Get the parent receiver for this zone
+        receiver_id = int(dev.pluginProps.get('sourceReceiver', '0'))
+        if receiver_id not in self.managed_receivers:
+            self.logger.error(f"Receiver for zone {dev.name} is not available")
+            return
+        
+        receiver = self.managed_receivers[receiver_id]
+        zone_number = int(dev.pluginProps.get('zoneNumber', '1'))
+        
+        try:
+            # === Turn On ===
+            if action.deviceAction == indigo.kDimmerRelayAction.TurnOn:
+                self.logger.debug(f"Turn on zone {dev.name}")
+                current_source = dev.states.get("source", 1)
+                receiver.set_zone_power(zone_number, True, current_source)
+                
+            # === Turn Off ===
+            elif action.deviceAction == indigo.kDimmerRelayAction.TurnOff:
+                self.logger.debug(f"Turn off zone {dev.name}")
+                receiver.set_zone_power(zone_number, False)
+                
+            # === Toggle ===
+            elif action.deviceAction == indigo.kDimmerRelayAction.Toggle:
+                self.logger.debug(f"Toggle zone {dev.name}")
+                current_power = dev.states.get("isPoweredOn", False)
+                current_source = dev.states.get("source", 1)
+                receiver.set_zone_power(zone_number, not current_power, current_source)
+                
+            # === Set Brightness (Volume) ===
+            elif action.deviceAction == indigo.kDimmerRelayAction.SetBrightness:
+                # Brightness 0-100 maps to volume 0-38
+                brightness = action.actionValue
+                volume = max(0, min(MAX_VOLUME, int(brightness * BRIGHTNESS_TO_VOLUME_FACTOR)))
+                current_volume = dev.states.get("volume", 0)
+                self.logger.debug(f"Set zone {dev.name} volume to {volume} (brightness {brightness})")
+                receiver.set_zone_volume(zone_number, volume, current_volume)
+                
+            # === Brighten By (Volume Up) ===
+            elif action.deviceAction == indigo.kDimmerRelayAction.BrightenBy:
+                # Convert brightness adjustment to volume adjustment
+                adjustment = action.actionValue
+                current_brightness = dev.states.get("brightnessLevel", 0)
+                new_brightness = min(100, current_brightness + adjustment)
+                volume = max(0, min(MAX_VOLUME, int(new_brightness * BRIGHTNESS_TO_VOLUME_FACTOR)))
+                current_volume = dev.states.get("volume", 0)
+                self.logger.debug(f"Brighten zone {dev.name} by {adjustment} to volume {volume}")
+                receiver.set_zone_volume(zone_number, volume, current_volume)
+                
+            # === Dim By (Volume Down) ===
+            elif action.deviceAction == indigo.kDimmerRelayAction.DimBy:
+                # Convert brightness adjustment to volume adjustment
+                adjustment = action.actionValue
+                current_brightness = dev.states.get("brightnessLevel", 0)
+                new_brightness = max(0, current_brightness - adjustment)
+                volume = max(0, min(MAX_VOLUME, int(new_brightness * BRIGHTNESS_TO_VOLUME_FACTOR)))
+                current_volume = dev.states.get("volume", 0)
+                self.logger.debug(f"Dim zone {dev.name} by {adjustment} to volume {volume}")
+                receiver.set_zone_volume(zone_number, volume, current_volume)
+                
+            else:
+                self.logger.warning(f"Unhandled dimmer action: {action.deviceAction}")
+                
+        except Exception as e:
+            self.logger.error(f"Error handling dimmer action for {dev.name}: {e}")
+
+    # endregion
+    # ========================================================================
+    
+    # ========================================================================
     # region Configuration UI Callbacks
     # ========================================================================
     def validateDeviceConfigUi(self, values_dict: indigo.Dict,
@@ -421,7 +543,7 @@ class Plugin(indigo.PluginBase):
             # Set address for display
             values_dict["address"] = serial_port
                 
-        elif type_id == 'nilesAudioZone':
+        elif type_id in ('nilesAudioZone', 'nilesAudioZoneDimmer'):
             # Validate receiver selection
             receiver_id = values_dict.get("sourceReceiver", "")
             if not receiver_id:

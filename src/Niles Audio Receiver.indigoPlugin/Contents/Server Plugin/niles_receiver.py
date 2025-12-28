@@ -23,6 +23,7 @@ Response format:
 """
 
 # region Python Imports
+import math
 import re
 import serial
 import threading
@@ -37,6 +38,13 @@ import indigo
 if TYPE_CHECKING:
     from plugin import Plugin
     from niles_zone import NilesZone
+# endregion
+
+# region Constants
+# Niles Audio volume range is 0-38 (same as Dayton Audio)
+MAX_VOLUME = 38
+VOLUME_TO_BRIGHTNESS_FACTOR = 100.0 / MAX_VOLUME  # ~2.63
+BRIGHTNESS_TO_VOLUME_FACTOR = MAX_VOLUME / 100.0  # 0.38
 # endregion
 
 
@@ -371,10 +379,10 @@ class NilesReceiver:
         
         Args:
             zone_number: The zone number (1-18)
-            target_volume: Target volume level (0-100)
-            current_volume: Current volume level (0-100)
+            target_volume: Target volume level (0-38)
+            current_volume: Current volume level (0-38)
         """
-        target_volume = max(0, min(100, target_volume))
+        target_volume = max(0, min(MAX_VOLUME, target_volume))
         diff = target_volume - current_volume
         
         if diff == 0:
@@ -590,6 +598,9 @@ class NilesReceiver:
         """
         Update zone device states from parsed response.
         
+        For dimmer devices (nilesAudioZoneDimmer), also updates brightnessLevel
+        and onOffState to support native dimmer controls.
+        
         Args:
             zone: The NilesZone instance to update
             status: Dictionary of parsed status values
@@ -646,6 +657,19 @@ class NilesReceiver:
         current_power = dev.states.get("isPoweredOn", False)
         if current_power != is_powered_on or True:  # Always update for uiValue
             dev.updateStateOnServer(key="isPoweredOn", value=is_powered_on, uiValue=ui_value)
+        
+        # For dimmer devices, also update the standard dimmer states (brightnessLevel, onOffState)
+        # This allows native Indigo dimmer controls to work with volume
+        if dev.deviceTypeId == 'nilesAudioZoneDimmer':
+            # brightnessLevel: volume 0-38 maps to brightness 0-100
+            if is_powered_on:
+                brightness = int(math.floor(volume * VOLUME_TO_BRIGHTNESS_FACTOR))
+            else:
+                brightness = 0
+            dev.updateStateOnServer(key="brightnessLevel", value=brightness)
+            
+            # onOffState: on if powered on
+            dev.updateStateOnServer(key="onOffState", value=is_powered_on)
         
         self.logger.debug(f"Updated states for {dev.name}")
 

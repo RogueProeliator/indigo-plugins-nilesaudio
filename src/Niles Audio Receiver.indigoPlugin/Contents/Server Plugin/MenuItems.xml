@@ -45,7 +45,13 @@
 		</ConfigUI>
 	</MenuItem>
 
-	<MenuItem id="updateSectionSeparator" />
+	<MenuItem id="updateSectionSeparator" type="separator" />
+	<MenuItem id="upgradeZonesToDimmer">
+		<Name>Upgrade Legacy Zone Devices to Dimmer Type</Name>
+		<CallbackMethod>upgrade_zone_devices_to_dimmer</CallbackMethod>
+	</MenuItem>
+
+	<MenuItem id="licenseSeparator" type="separator" />
 	<MenuItem id="viewLicense">
 		<Name>View License...</Name>
 		<ConfigUI>
