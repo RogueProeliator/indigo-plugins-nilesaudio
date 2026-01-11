@@ -2,11 +2,11 @@
 <Actions>
 	<!-- Actions which are taken against the main receiver and affect all zones -->
 	<Action id="allZonesOff" uiPath="DeviceActions" deviceFilter="self.nilesAudioReceiver">
-		<Name>Party Zones - All Off</Name>
+		<Name>Set Power (All Zones) - Off</Name>
 		<CallbackMethod>execute_action</CallbackMethod>
 	</Action>
 	<Action id="muteAllZones" uiPath="DeviceActions" deviceFilter="self.nilesAudioReceiver">
-		<Name>Party Zones - Mute All</Name>
+		<Name>Set Mute (All Zones) - On</Name>
 		<CallbackMethod>execute_action</CallbackMethod>
 	</Action>
 
@@ -46,7 +46,7 @@
 
 	<Action id="sep03" uiPath="DeviceActions" />
 	<Action id="changeZoneSource" uiPath="DeviceActions" deviceFilter="self.nilesAudioZone, self.nilesAudioZoneDimmer">
-		<Name>Set Zone Source</Name>
+		<Name>Zone Source - Select Source</Name>
 		<ConfigUI>
 			<Field type="menu" id="zoneSource">
 				<Label>Set Source:</Label>
@@ -61,7 +61,7 @@
 		<Name>Zone Volume - Set Value</Name>
 		<ConfigUI>
 			<Field id="volumeTarget" type="textfield">
-				<Label>Set To (0-100):</Label>
+				<Label>Set To (0-50):</Label>
 			</Field>
 		</ConfigUI>
 		<CallbackMethod>execute_action</CallbackMethod>
@@ -69,11 +69,11 @@
 	<Action id="adjustZoneVolume" uiPath="DeviceActions" deviceFilter="self.nilesAudioZone, self.nilesAudioZoneDimmer">
 		<Name>Zone Volume - Adjust Up/Down</Name>
 		<ConfigUI>
+			<Field id="instructions" type="label">
+				<Label>This action relies on the current state of the device in Indigo; if you are using non-Indigo controls such as wall pads, please be sure polling for status is setup in the device configuration dialog.</Label>
+			</Field>
 			<Field id="volumeAdjustment" type="textfield">
 				<Label>Adjust By (negative allowed):</Label>
-			</Field>
-			<Field id="instructions" type="label" fontSize="small">
-				<Label>This action relies on the current state of the device in Indigo; if you are using non-Indigo controls such as wall pads, please be sure polling for status is setup in the device configuration dialog.</Label>
 			</Field>
 		</ConfigUI>
 		<CallbackMethod>execute_action</CallbackMethod>

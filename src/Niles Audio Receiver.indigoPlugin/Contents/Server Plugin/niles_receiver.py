@@ -490,7 +490,9 @@ class NilesReceiver:
 
     def _do_poll_all(self) -> None:
         """Poll status for all registered zones."""
-        for zone_number_str in self.registered_zones:
+        # Iterate over a static list of keys to avoid "dictionary changed size"
+        # errors if zones are registered/unregistered concurrently.
+        for zone_number_str in list(self.registered_zones.keys()):
             zone_number = int(zone_number_str)
             self._do_activate_zone(zone_number)
             time.sleep(self.COMMAND_PAUSE)
@@ -533,7 +535,9 @@ class NilesReceiver:
 
     def _do_mute_all(self) -> None:
         """Mute all zones that are currently powered on and not muted."""
-        for zone_number_str, zone in self.registered_zones.items():
+        # Iterate over a static snapshot of items to avoid concurrent
+        # modification while muting.
+        for zone_number_str, zone in list(self.registered_zones.items()):
             dev = zone.device
             if dev.states.get("isPoweredOn", False) and not dev.states.get("isMuted", False):
                 self.logger.debug(f"Mute All: muting zone {zone_number_str}")
